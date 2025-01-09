@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  rabbitmq-node1:
+    image: rabbitmq:3.13.7-management
+    hostname: rabbitmq-node1
+    container_name: rabbitmq-node1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "rabbitmq-cluster-cookie"
+      RABBITMQ_NODENAME: "rabbit@rabbitmq-node1"
+    ports:
+      - "5672:5672"       # AMQP port
+      - "15672:15672"     # Management UI
+    volumes:
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./data/node1:/var/lib/rabbitmq
+    networks:
+      rabbitmq_cluster:
+
+  rabbitmq-node2:
+    image: rabbitmq:3.13.7-management
+    hostname: rabbitmq-node2
+    container_name: rabbitmq-node2
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "rabbitmq-cluster-cookie"
+      RABBITMQ_NODENAME: "rabbit@rabbitmq-node2"
+    ports:
+      - "5673:5672"       # AMQP port remapped for node2
+      - "15673:15672"     # Management UI remapped for node2
+    volumes:
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./data/node2:/var/lib/rabbitmq
+    networks:
+      rabbitmq_cluster:
+
+  rabbitmq-node3:
+    image: rabbitmq:3.13.7-management
+    hostname: rabbitmq-node3
+    container_name: rabbitmq-node3
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "rabbitmq-cluster-cookie"
+      RABBITMQ_NODENAME: "rabbit@rabbitmq-node3"
+    ports:
+      - "5674:5672"       # AMQP port remapped for node3
+      - "15674:15672"     # Management UI remapped for node3
+    volumes:
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./data/node3:/var/lib/rabbitmq
+    networks:
+      rabbitmq_cluster:
+
+networks:
+  rabbitmq_cluster:
+    driver: bridge
